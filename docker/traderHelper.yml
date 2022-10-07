@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+
+    traderHelper:
+        build:
+            context: ../
+            dockerfile: docker/Dockerfile
+        image: trader-helper
+        container_name: trader-helper
+        environment:
+            - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,address=*:8000,suspend=n
+        volumes:
+            - ../build/libs/traderHelper.jar:/app/traderHelper.jar
