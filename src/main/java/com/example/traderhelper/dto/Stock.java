@@ -1,4 +1,4 @@
-package com.example.traderhelper.model;
+package com.example.traderhelper.dto;
 
 import lombok.Builder;
 import lombok.Getter;

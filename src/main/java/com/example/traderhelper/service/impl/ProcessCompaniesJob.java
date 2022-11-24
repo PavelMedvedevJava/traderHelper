@@ -1,7 +1,6 @@
 package com.example.traderhelper.service.impl;
 
 import com.example.traderhelper.service.CompanyService;
-import com.example.traderhelper.service.ScheduledService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
-public class ScheduledServiceImpl implements ScheduledService {
+public class ProcessCompaniesJob {
 	private final CompanyService companyService;
 
 	@Scheduled(fixedRateString = "${bot.updateDB}")
 	public void dbUpdateJob() {
-		companyService.updateDB();
+		companyService.updateCompaniesAndStocksInfo();
 	}
 
 	@Scheduled(fixedRateString = "${bot.notyfiJob}")

@@ -1,7 +1,7 @@
 package com.example.traderhelper.service.impl;
 
-import com.example.traderhelper.model.Company;
-import com.example.traderhelper.model.Stock;
+import com.example.traderhelper.dto.Company;
+import com.example.traderhelper.dto.Stock;
 import com.example.traderhelper.service.CompanyService;
 import com.example.traderhelper.service.ExecuteService;
 import com.example.traderhelper.storage.entity.CompanyEntity;
@@ -39,7 +39,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	private final Executor executor = Executors.newFixedThreadPool(40);
 
-	public void updateDB() {
+	public void updateCompaniesAndStocksInfo() {
 		var companies = getCompany();
 		var stocks = getStock(companies);
 
@@ -52,17 +52,14 @@ public class CompanyServiceImpl implements CompanyService {
 		printResult(getTopStocks());
 	}
 
+	public List<Company> getTopValCompany() {
+		var valCompanies= companyRepository.getTopVolatileCompany();
+		return valCompanies.stream().map(companyMapper::map).collect(Collectors.toList());
+	}
+
 	private List<StockEntity> getStock(List<CompanyEntity> companies) {
-
 		var stocks = new CopyOnWriteArrayList<StockEntity>();
-
-		companies.parallelStream().forEach(company -> {
-			try {
-				stocks.add(
-					CompletableFuture.supplyAsync(() -> executeService.getStock(company.getSymbol()), executor).get());
-			} catch (Exception ignored) {
-			}
-		});
+		companies.forEach(company -> CompletableFuture.supplyAsync(() -> executeService.getStock(company.getSymbol()), executor).thenApply(stocks::add));
 
 		return stocks;
 	}
@@ -77,11 +74,6 @@ public class CompanyServiceImpl implements CompanyService {
 
 	private void updateStock(List<StockEntity> stockEntityList) {
 		stockRepository.saveAllAndFlush(stockEntityList);
-	}
-
-	public List<Company> getTopValCompany() {
-		var valCompanies= companyRepository.getTopVolatileCompany();
-		return valCompanies.stream().map(companyMapper::map).collect(Collectors.toList());
 	}
 
 	private List<Stock> getTopStocks() {

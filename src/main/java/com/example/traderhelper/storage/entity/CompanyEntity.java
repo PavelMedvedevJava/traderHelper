@@ -15,7 +15,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Getter
 @Setter
-@Table(name = "company")
+@Table(name = "companies")
 public class CompanyEntity {
 
 	@Id

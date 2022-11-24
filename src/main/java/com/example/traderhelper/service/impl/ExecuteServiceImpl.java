@@ -29,18 +29,19 @@ public class ExecuteServiceImpl extends AsyncConfigurerSupport implements Execut
 		return executor;
 	}
 
-	private final String COMPANY_URL = "https://sandbox.iexapis.com/stable/ref-data/symbols?token=Tpk_ee567917a6b640bb8602834c9d30e571";
-	private final String STOCK_URL = "https://sandbox.iexapis.com/stable/stock/%s/quote?token=Tpk_ee567917a6b640bb8602834c9d30e571";
+	private final String COMPANY_URL = "%s/stable/ref-data/symbols?token=%s";
+	private final String STOCK_URL = "%s/stable/stock/%s/quote?token=%s";
 
 	private final RestTemplate restTemplate;
 
 	public List<CompanyEntity> getCompanies() {
-		var companies = restTemplate.getForObject(COMPANY_URL, CompanyEntity[].class);
+		var url = String.format(COMPANY_URL,"${boot.host}","${bot.token}");
+		var companies = restTemplate.getForObject(url, CompanyEntity[].class);
 		return Arrays.asList(Objects.requireNonNull(companies));
 	}
 
 	public StockEntity getStock(String symbol){
-		var url = String.format(STOCK_URL, symbol);
+		var url = String.format(STOCK_URL,"${bot.host}", symbol,"${bot.token}");
 		return restTemplate.getForObject(url, StockEntity.class);
 	}
 }

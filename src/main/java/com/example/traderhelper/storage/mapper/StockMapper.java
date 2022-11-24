@@ -1,6 +1,6 @@
 package com.example.traderhelper.storage.mapper;
 
-import com.example.traderhelper.model.Stock;
+import com.example.traderhelper.dto.Stock;
 import com.example.traderhelper.storage.entity.StockEntity;
 import org.springframework.stereotype.Component;
 
