@@ -16,14 +16,15 @@ ENV GRADLE_HOME=/gradle/gradle-6.8.1
 ENV PATH=$PATH:$GRADLE_HOME/bin
 RUN gradle --version
 
-RUN mkdir -p /app
+RUN mkdir -p /app/src
 
-ENTRYPOINT git -C /app clone https://github.com/PavelMedvedevJava/traderHelper.git
+RUN git -C /app/src clone https://github.com/PavelMedvedevJava/traderHelper.git
 
-RUN cd ~ /app/traderHelper
+RUN ls -l /app/src
 
-RUN gradle build
+RUN cd /app/src/traderHelper \
+    && gradle jar
 
-ENV APP_JAR_FILE /app/traderHelper/build/libs/traderHelper-0.0.1-SNAPSHOT-plain.jar
+ENV APP_JAR_FILE /app/src/traderHelper/build/libs/traderHelper.jar
 
 ENTRYPOINT ["/bin/sh","-c","java -jar $APP_JAR_FILE"]
